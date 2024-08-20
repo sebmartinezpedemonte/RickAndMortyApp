@@ -1,0 +1,13 @@
+<template>
+    <lightning-card title="Listado">
+        <c-salesforce-codex-data-table
+            key-field="Id"
+            data={characters}
+            columns={columns}
+            onsort={handleSort}
+            sorted-by={sortedBy}
+            sorted-direction={sortedDirection}
+            onrowaction={handleRowAction}>
+        </c-salesforce-codex-data-table>
+    </lightning-card>
+</template>
