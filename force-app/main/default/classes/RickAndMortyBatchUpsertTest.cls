@@ -88,7 +88,8 @@ private class RickAndMortyBatchUpsertTest {
             	Url__c = 'https://rickandmortyapi.com/api/character/' + i 
             ));
         }        
-        Database.upsert(characters, Personaje__c.ExtId__c, false); 
+        Database.upsert(characters, Personaje__c.ExtId__c, false);
+        Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMock());
 		RickAndMortyBatchUpsert batch = new RickAndMortyBatchUpsert();
         Test.startTest();        
         Database.executeBatch(batch, 100);
