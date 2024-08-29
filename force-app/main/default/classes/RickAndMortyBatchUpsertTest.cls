@@ -1,6 +1,7 @@
 @isTest
 private class RickAndMortyBatchUpsertTest {
-
+	
+    	
     @TestSetup
     static void setup() {
         List<Personaje__c> characters = new List<Personaje__c>();
@@ -14,25 +15,27 @@ private class RickAndMortyBatchUpsertTest {
             ImageUrl__c = 'https://rickandmortyapi.com/api/character/avatar/'+ i + '.jpeg',
             Url__c = 'https://rickandmortyapi.com/api/character/' + i    
             ));
-        }               
+        }
         Database.upsert(characters, Personaje__c.ExtId__c, false);
     }
 
     @isTest
     static void testBatchExecutionSuccess() {
-        Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMock());        
         Test.startTest();
-		RickAndMortyBatchUpsert.runBatchWithFixedScope();
+        RickAndMortyBatchUpsert batch = new RickAndMortyBatchUpsert();
+		Database.executeBatch(batch, 100);
         Test.stopTest();
-        List<Personaje__c> upsertedCharacters = [SELECT Id, Name, Status__c FROM Personaje__c WHERE ExtId__c = 1];
-        System.assertEquals(1, upsertedCharacters.size(), 'Se deberia haber insertado un personaje con ExtId = 1');
-        System.assertEquals('Rick Sanchez', upsertedCharacters[0].Name, 'El nombre del personaje deberia ser Rick Sanchez');
-    }
+        List<Personaje__c> upsertedCharacters = [SELECT Id, Name, Status__c FROM Personaje__c];
+        System.assertEquals(5, upsertedCharacters.size(), 'Se deberian haber insertado 5 personajes');
+        System.assertEquals('Rick Sanchez', upsertedCharacters[0].Name, 'El nombre del primer personaje deberia ser Rick Sanchez');
+  }
 
     @isTest
     static void testBatchExecutionApiError() {
         Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMockWithError());
         Test.startTest();
+        RickAndMortyBatchUpsert batch = new RickAndMortyBatchUpsert();
         RickAndMortyBatchUpsert.runBatchWithFixedScope();
         Test.stopTest();
         List<Personaje__c> errorCharacters = [SELECT Id, Name FROM Personaje__c WHERE ExtId__c = 9999];
@@ -50,7 +53,33 @@ private class RickAndMortyBatchUpsertTest {
         batch.execute(null, scope);        
         Test.stopTest();
         
-        System.assertEquals(5, batch.errors, 'Se esperaba que la cantidad de errores sea 5 por la excepcion simulada');
+        System.assertEquals(5, batch.getErrorsAPICall(), 'Se esperaba que la cantidad de errores sea 5 por la excepcion simulada');
     }
+    
+    @isTest
+    static void performanceTest() {
+        List<Personaje__c> characters = new List<Personaje__c>();
+        Integer numRecords = 9000;         
+        for(Integer i = 1; i <= numRecords; i++) {
+            characters.add(new Personaje__c(
+                ExtId__c = i,
+                Name = 'Character ' + i,
+                Status__c = 'Alive',
+                Species__c = 'Human',
+                Gender__c = 'Male',
+            	ImageUrl__c = 'https://rickandmortyapi.com/api/character/avatar/'+ i + '.jpeg',
+            	Url__c = 'https://rickandmortyapi.com/api/character/' + i 
+            ));
+        }        
+        Database.upsert(characters, Personaje__c.ExtId__c, false); 
+		RickAndMortyBatchUpsert batch = new RickAndMortyBatchUpsert();
+        Test.startTest();        
+        Database.executeBatch(batch, 100);
+        Test.stopTest();
+        List<Personaje__c> charactersUpserted = [SELECT Id, Name FROM Personaje__c];
+        System.assertEquals(characters.size(), charactersUpserted.size(), 'Se esperaba que se introduzcan personajes');
+    }
+    
+    
         
 }
