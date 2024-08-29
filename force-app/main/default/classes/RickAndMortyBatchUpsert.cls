@@ -1,9 +1,9 @@
 public with sharing class RickAndMortyBatchUpsert implements Database.Batchable<sObject>, Database.Stateful, Database.AllowsCallouts {
 
     Integer succesfulUpserts = 0;
-    public Integer failedUpserts = 0;   //fijarse si al comentar el public se rompe algo
-    public Integer errorsFindingCharacter = 0; //fijarse si al comentar el public se rompe algo
-    public Integer errorsAPICall = 0; //fijarse si al comentar el public se rompe algo
+    Integer failedUpserts = 0;   
+    Integer errorsFindingCharacter = 0; 
+    Integer errorsAPICall = 0; 
     Integer firstCharacter;
     Integer amountOfCharactersToCall;
     final static String RICK_AND_MORTY_API = 'https://rickandmortyapi.com/api/character/';    
@@ -168,4 +168,18 @@ public with sharing class RickAndMortyBatchUpsert implements Database.Batchable<
         System.debug('Personajes insertados o actualizados: ' + succesfulUpserts);
         System.debug('Personajes con error ' + failedUpserts);
     }
+    
+    public Integer getErrorsAPICall(){
+        return this.errorsAPICall;
+    }
+    
+    public Integer getSuccesfulUpserts(){
+      return this.succesfulUpserts;  
+    } 
+    
+    public Integer getFailedUpserts(){
+        return this.failedUpserts;
+    }   
+    
+    
 }
