@@ -22,12 +22,13 @@ private class RickAndMortyBatchUpsertSchedulerTest {
         for (CronTrigger job : existingJobs) {
             System.abortJob(job.Id);
         }
-        String cronExp = '0 0 19 ? * MON-FRI'; // A las 19:00 horas de lunes a viernes
-        System.schedule('RickAndMortyBatchUpsert Job', cronExp, new RickAndMortyBatchUpsertScheduler());
+        String cronExp = '0 0 19 ? * MON-FRI'; // A las 19:00 horas de lunes a viernes        
         Test.startTest();
-        List<CronTrigger> jobs = [SELECT Id, CronJobDetail.Name, State FROM CronTrigger WHERE CronJobDetail.Name = 'RickAndMortyBatchUpsert Job'];
+        System.schedule('RickAndMortyBatchUpsert Job', cronExp, new RickAndMortyBatchUpsertScheduler());        
         Test.stopTest(); 
+        List<CronTrigger> jobs = [SELECT Id, CronJobDetail.Name, State FROM CronTrigger WHERE CronJobDetail.Name = 'RickAndMortyBatchUpsert Job'];
         List<Personaje__c> charactersUpserted = [SELECT Id, Name FROM Personaje__c];
         System.assertEquals(5, charactersUpserted.size(), 'Se esperaban 5 personajes despues de la ejecucion del batch');
+        System.assertEquals(1, jobs.size(), 'Se esperaba que haya un job llamado RickAndMortyBatchUpsert Job');
     }
 }
