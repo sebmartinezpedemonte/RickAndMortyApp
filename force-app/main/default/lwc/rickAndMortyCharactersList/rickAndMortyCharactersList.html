@@ -1,13 +1,15 @@
 <template>
     <lightning-card title="Listado">
-        <c-salesforce-codex-data-table
+        <c-rick-and-morty-custom-data-table
             key-field="Id"
             data={characters}
             columns={columns}
             onsort={handleSort}
             sorted-by={sortedBy}
             sorted-direction={sortedDirection}
-            onrowaction={handleRowAction}>
-        </c-salesforce-codex-data-table>
+            onrowaction={handleRowAction}
+            hide-checkbox-column = "true"
+            >
+        </c-rick-and-morty-custom-data-table>
     </lightning-card>
 </template>
