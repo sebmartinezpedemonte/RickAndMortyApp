@@ -21,13 +21,14 @@ private class RickAndMortyBatchUpsertTest {
 
     @isTest
     static void testBatchExecutionSuccess() {
-        Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMock());
+        Test.setMock(HttpCalloutMock.class, new RickAndMortyApiCalloutMock());                
         Test.startTest();
-		RickAndMortyBatchUpsert.runBatchWithFixedScope();          
+		RickAndMortyBatchUpsert.runBatchWithFixedScope();
         Test.stopTest();
         List<Personaje__c> upsertedCharacters = [SELECT Id, Name, Status__c FROM Personaje__c];
         System.assertEquals(5, upsertedCharacters.size(), 'Se deberian haber insertado 5 personajes');
-        System.assertEquals('Rick Sanchez', upsertedCharacters[0].Name, 'El nombre del primer personaje deberia ser Rick Sanchez');
+        System.assertEquals('Rick Sanchez', upsertedCharacters[0].Name, 'El nombre del primer personaje deberia ser Rick Sanchez');        
+
         
   }
 
