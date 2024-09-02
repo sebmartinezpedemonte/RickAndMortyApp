@@ -9,13 +9,18 @@ export default class rickAndMortyCharactersList extends NavigationMixin(Lightnin
 
     columns = [
         { label: 'External Id', fieldName: 'ExtId__c', type: 'number', sortable: true },
-        { label: 'Name', fieldName: 'recordLink', type: 'url', sortable: true,
-            typeAttributes: {label: { fieldName: 'Name' }, target: '_self'} },        
+        { label: 'Name', fieldName: 'Name', type: 'button', sortable: true,
+            typeAttributes: {label: { fieldName: 'Name' }, name:'view', target: '_self', variant: 'base'} },        
         { label: 'Status', fieldName: 'Status__c', type: 'text' },
         { label: 'Species', fieldName: 'Species__c', type: 'text' },
         { label: 'Gender', fieldName: 'Gender__c', type: 'text' },
         { label: 'Image URL', fieldName: 'ImageUrl__c', type: 'url' },
-        { label : 'Image', fieldName: 'ImageUrl__c', type: 'image' },
+        { label : 'Image', fieldName: 'ImageUrl__c', type: 'image', 
+            typeAttributes: {
+                            url: { fieldName: 'ImageUrl__c' },
+                            name: { fieldName: 'Name' } 
+                            }
+                        },
         { label: 'URL', fieldName: 'Url__c', type: 'url' },
     ];
 
